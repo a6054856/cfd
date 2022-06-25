@@ -23,11 +23,11 @@ pattern_pin = re.compile(r'pt_pin=([\w\W]*?);')
 pattern_data = re.compile(r'\(([\w\W]*?)\)')
 
 # 判断新旧版青龙
-ql_auth_path = '/ql/config/auth.json'
+ql_auth_path = '/ql/data/config/auth.json'
 #判断环境变量
-flag = 'old'
+flag = 'new'
 if not os.path.exists(ql_auth_path):
-    flag = 'new'
+    flag = 'old'
 
 
 # 获取下个整点和时间戳
