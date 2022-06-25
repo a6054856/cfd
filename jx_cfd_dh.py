@@ -22,6 +22,13 @@ cfd_url = "https://m.jingxi.com/jxbfd/user/ExchangePrize?strZone=jxbfd&bizCode=j
 pattern_pin = re.compile(r'pt_pin=([\w\W]*?);')
 pattern_data = re.compile(r'\(([\w\W]*?)\)')
 
+# 判断新旧版青龙
+ql_auth_path = '/ql/config/auth.json'
+#判断环境变量
+flag = 'old'
+if not os.path.exists(ql_auth_path):
+    flag = 'new'
+
 
 # 获取下个整点和时间戳
 def get_date() -> str and int:
@@ -92,28 +99,46 @@ def cfd_qq(def_start_time):
     if data['iRet'] == 0:
         # 抢到了
         msg = "可能抢到了"
-        put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
-        disable_env(u_cookie.get('id'))
+        if flag == "old":
+            put_envs(u_cookie.get('_id'), u_cookie.get('name'), u_cookie.get('value'), msg)
+            disable_env(u_cookie.get('_id'))
+        elif flag == "new":
+            put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
+            disable_env(u_cookie.get('id'))        
     elif data['iRet'] == 2016:
         # 需要减
         start_time = float(u_start_time) - float(cfd_offset_time)
-        put_envs(u_start_dist.get('id'), u_start_dist.get('name'), str(start_time)[:8])
+        if flag == "old":
+            put_envs(u_start_dist.get('_id'), u_start_dist.get('name'), str(start_time)[:8])
+        elif flag == "new":
+            put_envs(u_start_dist.get('id'), u_start_dist.get('name'), str(start_time)[:8])
     elif data['iRet'] == 2013:
         # 需要加
         start_time = float(u_start_time) + float(cfd_offset_time)
         # print(u_start_dist)
-        put_envs(u_start_dist.get('id'), u_start_dist.get('name'), str(start_time)[:8])
+        if flag == "old":
+            put_envs(u_start_dist.get('_id'), u_start_dist.get('name'), str(start_time)[:8])
+        elif flag == "new":
+            put_envs(u_start_dist.get('id'), u_start_dist.get('name'), str(start_time)[:8])
     elif data['iRet'] == 1014:
         # URL过期
         pass
     elif data['iRet'] == 2007:
         # 财富值不够
-        put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
-        disable_env(u_cookie.get('id'))
+        if flag == "old":
+            put_envs(u_cookie.get('_id'), u_cookie.get('name'), u_cookie.get('value'), msg)
+            disable_env(u_cookie.get('_id'))
+        elif flag == "new":
+            put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
+            disable_env(u_cookie.get('id'))
     elif data['iRet'] == 9999:
         # 账号过期
-        put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
-        disable_env(u_cookie.get('id'))
+        if flag == "old":
+            put_envs(u_cookie.get('_id'), u_cookie.get('name'), u_cookie.get('value'), msg)
+            disable_env(u_cookie.get('_id'))
+        elif flag == "new":
+            put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
+            disable_env(u_cookie.get('id'))
     print("实际发送[{}]\n耗时[{:.3f}]\n用户[{}]\n结果[{}]".format(d1, (t2 - t1), u_pin, msg))
 
 
