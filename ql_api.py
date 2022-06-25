@@ -7,9 +7,8 @@ ql_auth_path = '/ql/data/config/auth.json'
 #判断环境变量
 flag = 'new'
 if not os.path.exists(ql_auth_path):
-    print('高版本青龙，使用路径/ql/data/config/auth.json')
     ql_auth_path = '/ql/config/auth.json'
-    flag = 'new'
+    flag = 'old'
 # ql_auth_path = r'D:\Docker\ql\config\auth.json'
 ql_url = 'http://localhost:5600'
 
