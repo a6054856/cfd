@@ -24,7 +24,7 @@ pattern_data = re.compile(r'\(([\w\W]*?)\)')
 
 # 判断新旧版青龙
 ql_auth_path = '/ql/data/config/auth.json'
-#判断环境变量
+# 判断环境变量
 flag = 'new'
 if not os.path.exists(ql_auth_path):
     flag = 'old'
@@ -88,7 +88,8 @@ def cfd_qq(def_start_time):
     t1 = time.time()
     d1 = datetime.datetime.now().strftime("%H:%M:%S.%f")
     res = requests.get(cfd_url, headers=headers)
-    # print(res.text)
+    print("打印返回结果如下：")
+    print(res.text)
     t2 = time.time()
     # 正则对结果进行提取
     re_list = pattern_data.search(res.text)
