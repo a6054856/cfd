@@ -8,6 +8,7 @@ import time
 import json
 import datetime
 import requests
+from notify import send
 from ql_util import get_random_str
 from ql_api import get_envs, disable_env, post_envs, put_envs
 
@@ -105,7 +106,8 @@ def cfd_qq(def_start_time):
             disable_env(u_cookie.get('_id'))
         elif flag == "new":
             put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
-            disable_env(u_cookie.get('id'))        
+            disable_env(u_cookie.get('id')) 
+        send('财富岛抢购通知', '可能抢到了')       
     elif data['iRet'] == 2016:
         # 需要减
         start_time = float(u_start_time) - float(cfd_offset_time)
@@ -132,6 +134,7 @@ def cfd_qq(def_start_time):
         elif flag == "new":
             put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
             disable_env(u_cookie.get('id'))
+        send('财富岛抢购通知', '财富值不够')
     elif data['iRet'] == 9999:
         # 账号过期
         if flag == "old":
@@ -140,6 +143,7 @@ def cfd_qq(def_start_time):
         elif flag == "new":
             put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
             disable_env(u_cookie.get('id'))
+        send('财富岛抢购通知', '抢购账号失效')
     print("实际发送[{}]\n耗时[{:.3f}]\n用户[{}]\n结果[{}]".format(d1, (t2 - t1), u_pin, msg))
 
 
