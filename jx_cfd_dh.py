@@ -156,7 +156,7 @@ if __name__ == '__main__':
     print("- 程序初始化")
     print("脚本进入时间[{}]".format(datetime.datetime.now().strftime("%H:%M:%S.%f")))
     # 从环境变量获取url,不存在则从配置获取
-    u_url = os.getenv("CFD_URL", cfd_url)
+    cfd_url = os.getenv("CFD_URL", cfd_url)
     # 获取cookie等参数
     u_pin, u_cookie = get_cookie()
     # 获取时间等参数
