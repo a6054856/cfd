@@ -23,6 +23,7 @@ cfd_url = "https://m.jingxi.com/jxbfd/user/ExchangePrize?strZone=jxbfd&bizCode=j
 pattern_pin = re.compile(r'pt_pin=([\w\W]*?);')
 pattern_data = re.compile(r'\(([\w\W]*?)\)')
 pattern_jsonp = re.compile(r'jsonp([\w\W]*?)')
+remark = ""
 
 # 判断新旧版青龙
 ql_auth_path = '/ql/data/config/auth.json'
@@ -54,14 +55,15 @@ def get_cookie():
             ck_list.append(ck)
     if len(ck_list) >= 1:
         cookie = ck_list[0]
+        # 新增备注
+        remark = cookie.get('remarks')
         re_list = pattern_pin.search(cookie.get('value'))
         if re_list is not None:
             pin = re_list.group(1)
-        print('共配置{}条CK,已载入用户[{}]'.format(len(ck_list), pin))
+        print('共配置{}条CK,已载入用户[{}],备注为[{}]'.format(len(ck_list), pin, remark))
     else:
         print('共配置{}条CK,请添加环境变量,或查看环境变量状态'.format(len(ck_list)))
-    return pin, cookie
-
+    return pin, cookie, remark
 
 # 获取配置参数
 def get_config():
@@ -101,7 +103,8 @@ def cfd_qq(def_start_time):
         data = json.loads(res.text)
     else:
         data = json.loads(re_list.group(1))
-    msg = data['sErrMsg']
+    msg = "原备注【"+remark + "】抢购结果：" + data['sErrMsg']
+    msg_temp = data['sErrMsg']
     # 根据返回值判断
     if data['iRet'] == 0:
         # 抢到了
@@ -112,7 +115,7 @@ def cfd_qq(def_start_time):
         elif flag == "new":
             put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
             disable_env(u_cookie.get('id')) 
-        send('财富岛抢购通知', '账号：'+u_pin+'可能抢到了')       
+        send('财富岛抢购通知', '账号：【'+u_pin+'】，备注【'+ remark +'】\n您可能抢到了')       
     elif data['iRet'] == 2016:
         # 需要减
         start_time = float(u_start_time) - float(cfd_offset_time)
@@ -139,7 +142,7 @@ def cfd_qq(def_start_time):
         elif flag == "new":
             put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
             disable_env(u_cookie.get('id'))
-        send('财富岛抢购通知', '账号：'+u_pin+'财富值不够')
+        send('财富岛抢购通知', '账号：【'+u_pin+'】，备注【'+ remark +'】\n您的财富值不够')
     elif data['iRet'] == 9999:
         # 账号过期
         if flag == "old":
@@ -148,8 +151,8 @@ def cfd_qq(def_start_time):
         elif flag == "new":
             put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
             disable_env(u_cookie.get('id'))
-        send('财富岛抢购通知', '账号：'+u_pin+'抢购账号失效')
-    print("实际发送[{}]\n耗时[{:.3f}]\n用户[{}]\n结果[{}]".format(d1, (t2 - t1), u_pin, msg))
+        send('财富岛抢购通知', '账号：【'+u_pin+'】，备注【'+ remark +'】\n您的抢购账号已失效')
+    print("实际发送[{}]\n耗时[{:.3f}]\n用户[{}]，备注[{}]\n抢购结果[{}]".format(d1, (t2 - t1), u_pin, remark, msg_temp))
 
 
 if __name__ == '__main__':
@@ -158,7 +161,7 @@ if __name__ == '__main__':
     # 从环境变量获取url,不存在则从配置获取
     cfd_url = os.getenv("CFD_URL", cfd_url)
     # 获取cookie等参数
-    u_pin, u_cookie = get_cookie()
+    u_pin, u_cookie, remark = get_cookie()
     # 获取时间等参数
     u_start_time, u_start_dist = get_config()
     # 预计下个整点为
