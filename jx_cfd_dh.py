@@ -57,6 +57,8 @@ def get_cookie():
         cookie = ck_list[0]
         # 新增备注
         remark = cookie.get('remarks')
+        if remark is None:
+            remark = ""
         re_list = pattern_pin.search(cookie.get('value'))
         if re_list is not None:
             pin = re_list.group(1)
