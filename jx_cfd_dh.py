@@ -56,7 +56,7 @@ def get_cookie():
     if len(ck_list) >= 1:
         cookie = ck_list[0]
         # 新增备注
-        remark = ""
+        global remark
         remark = cookie.get('remarks')
         if remark is None:
             remark = ""
