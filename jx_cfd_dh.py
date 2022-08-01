@@ -118,7 +118,7 @@ def cfd_qq(def_start_time):
         elif flag == "new":
             put_envs(u_cookie.get('id'), u_cookie.get('name'), u_cookie.get('value'), msg)
             disable_env(u_cookie.get('id')) 
-        send('财富岛抢购通知', '账号：【'+u_pin+'】，备注【'+ remark +'】\n您可能抢到了')       
+        send('财富岛抢购通知', '账号：【'+u_pin+'】，备注【'+ remark +'】\n您可能抢到了,也可能是CK忘记加cid=1;请自行检查')       
     elif data['iRet'] == 2016:
         # 需要减
         start_time = float(u_start_time) - float(cfd_offset_time)
