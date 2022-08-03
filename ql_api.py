@@ -1,9 +1,14 @@
-import json
+import json, os
 import time
 
 import requests
 
-ql_auth_path = '/ql/config/auth.json'
+ql_auth_path = '/ql/data/config/auth.json'
+#判断环境变量
+flag = 'new'
+if not os.path.exists(ql_auth_path):
+    ql_auth_path = '/ql/config/auth.json'
+    flag = 'old'
 # ql_auth_path = r'D:\Docker\ql\config\auth.json'
 ql_url = 'http://localhost:5600'
 
@@ -60,11 +65,19 @@ def put_envs(_id: str, name: str, value: str, remarks: str = None) -> bool:
     params = {
         't': int(time.time() * 1000)
     }
+    
     data = {
         'name': name,
         'value': value,
         'id': _id
     }
+    if flag == 'old':
+       data = {
+        'name': name,
+        'value': value,
+        '_id': _id
+        } 
+    
     if remarks is not None:
         data['remarks'] = remarks
     res = requests.put(ql_url + '/api/envs', headers=__get__headers(), params=params, json=data)
